@@ -23,6 +23,7 @@ import useTheme from '@hooks/useTheme';
 import useThemeStyles from '@hooks/useThemeStyles';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import {deleteWorkspaceCategories, setWorkspaceCategoryEnabled} from '@libs/actions/Policy';
+import {openPolicyCategoriesPage} from '@libs/actions/Category';
 import localeCompare from '@libs/LocaleCompare';
 import Navigation from '@libs/Navigation/Navigation';
 import * as PolicyUtils from '@libs/PolicyUtils';
@@ -63,7 +64,7 @@ function WorkspaceCategoriesPage({policy, policyCategories, route}: WorkspaceCat
     const [deleteCategoriesConfirmModalVisible, setDeleteCategoriesConfirmModalVisible] = useState(false);
 
     function fetchCategories() {
-        Policy.openPolicyCategoriesPage(route.params.policyID);
+        openPolicyCategoriesPage(route.params.policyID);
     }
 
     const {isOffline} = useNetwork({onReconnect: fetchCategories});
