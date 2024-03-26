@@ -3,7 +3,6 @@ import ExpensiMark from 'expensify-common/lib/ExpensiMark';
 import Str from 'expensify-common/lib/str';
 import {escapeRegExp} from 'lodash';
 import lodashClone from 'lodash/clone';
-import lodashUnion from 'lodash/union';
 import type {NullishDeep, OnyxCollection, OnyxEntry, OnyxUpdate} from 'react-native-onyx';
 import Onyx from 'react-native-onyx';
 import type {ValueOf} from 'type-fest';
@@ -80,7 +79,6 @@ import type {
     PolicyTag,
     PolicyTagList,
     PolicyTags,
-    RecentlyUsedCategories,
     RecentlyUsedTags,
     ReimbursementAccount,
     Report,
@@ -214,13 +212,6 @@ let reimbursementAccount: OnyxEntry<ReimbursementAccount>;
 Onyx.connect({
     key: ONYXKEYS.REIMBURSEMENT_ACCOUNT,
     callback: (val) => (reimbursementAccount = val),
-});
-
-let allRecentlyUsedCategories: OnyxCollection<RecentlyUsedCategories> = {};
-Onyx.connect({
-    key: ONYXKEYS.COLLECTION.POLICY_RECENTLY_USED_CATEGORIES,
-    waitForCollectionCallback: true,
-    callback: (val) => (allRecentlyUsedCategories = val),
 });
 
 let allPolicyTags: OnyxCollection<PolicyTagList> = {};
@@ -2350,16 +2341,6 @@ function clearErrors(policyID: string) {
  */
 function dismissAddedWithPrimaryLoginMessages(policyID: string) {
     Onyx.merge(`${ONYXKEYS.COLLECTION.POLICY}${policyID}`, {primaryLoginsInvited: null});
-}
-
-function buildOptimisticPolicyRecentlyUsedCategories(policyID?: string, category?: string) {
-    if (!policyID || !category) {
-        return [];
-    }
-
-    const policyRecentlyUsedCategories = allRecentlyUsedCategories?.[`${ONYXKEYS.COLLECTION.POLICY_RECENTLY_USED_CATEGORIES}${policyID}`] ?? [];
-
-    return lodashUnion([category], policyRecentlyUsedCategories);
 }
 
 function buildOptimisticPolicyRecentlyUsedTags(policyID?: string, transactionTags?: string): RecentlyUsedTags {
@@ -4779,7 +4760,6 @@ export {
     clearErrors,
     dismissAddedWithPrimaryLoginMessages,
     openDraftWorkspaceRequest,
-    buildOptimisticPolicyRecentlyUsedCategories,
     buildOptimisticPolicyRecentlyUsedTags,
     createDraftInitialWorkspace,
     setWorkspaceInviteMessageDraft,
